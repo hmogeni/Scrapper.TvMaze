@@ -31,7 +31,7 @@ namespace Scrapper.TvMaze.Models
             modelBuilder.Entity<Parameter>().HasData(
                 new Parameter { Id = 1, ParamName = "SHOWS_ENDPOINT", ParamValue = "http://api.tvmaze.com/schedule/full" },
                 new Parameter { Id = 2, ParamName = "CAST_ENDPOINT", ParamValue = "http://api.tvmaze.com/shows/{0}/cast" },
-                new Parameter { Id = 3, ParamName = "LAST_RUN", ParamValue = "18-11-2018 00:00" }
+                new Parameter { Id = 3, ParamName = "LAST_RUN", ParamValue = "11/26/2018" }
                 );
         }
         public DbSet<Show> Shows { get; set; }
