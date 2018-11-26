@@ -2,23 +2,26 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Scrapper.TvMaze.Models
 {
     public class ScrapperContext : DbContext
     {
-        public ScrapperContext(string connection) : base()
+        public ScrapperContext() : base()
         {
 
         }
         public ScrapperContext(DbContextOptions options) : base(options)
         {
+            //Database.SetInitializer<ScrapperContext>(new CreateDatabaseIfNotExists<ScrapperContext>());
         }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //}
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=TvScrapper;Integrated Security=True;", providerOptions => providerOptions.CommandTimeout(60)).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,21 +39,7 @@ namespace Scrapper.TvMaze.Models
         public DbSet<ShowCast> ShowCasts { get; set; }
         public DbSet<Parameter> Parameters { get; set; }
     }
-
-    //public class ProductConfiguration : IEntityTypeConfiguration<Parameter>
-    //{
-    //    public void Configure(EntityTypeBuilder<Parameter> builder)
-    //    {
-    //        var m = new List<Parameter>
-    //        {
-    //            new Parameter {ParamName = "SHOWS_ENDPOINT", ParamValue = "http://api.tvmaze.com/schedule/full"},
-    //            new Parameter {ParamName = "CAST_ENDPOINT", ParamValue = "http://api.tvmaze.com/shows/{id}/cast"},
-    //            new Parameter {ParamName = "LAST_RUN", ParamValue = "18-11-2018 00:00"}
-    //        };
-    //        builder.HasData(m);
-    //    }
-    //}
-
+    
     [Table("Show")]
     public class Show
     {
@@ -101,17 +90,16 @@ namespace Scrapper.TvMaze.Models
         [Required(AllowEmptyStrings = false, ErrorMessage = "*Required")]
         [Display(Name = "Show")]
         [ScaffoldColumn(true)]
+        [ForeignKey("ShowForeignKey")]
         public long ShowId { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "*Required")]
         [Display(Name = "Cast")]
         [ScaffoldColumn(true)]
+        [ForeignKey("CastForeignKey")]
         public long CastId { get; set; }
 
-        [ForeignKey("ShowForeignKey")]
         public Show Show { get; set; }
-
-        [ForeignKey("CastForeignKey")]
         public Cast Cast { get; set; }
     }
 
